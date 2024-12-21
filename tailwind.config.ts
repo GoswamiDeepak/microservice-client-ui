@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-
+import {fontFamily} from 'tailwindcss/defaultTheme'
 const config: Config = {
     darkMode: ["class"],
     content: [
@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			manrope: ["var(--font-manrope)", ...fontFamily.sans]
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -58,6 +61,7 @@ const config: Config = {
   		}
   	}
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 };
 export default config;
