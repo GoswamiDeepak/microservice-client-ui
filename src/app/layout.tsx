@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import {Manrope} from 'next/font/google';
 import { cn } from "@/lib/utils";
+import Header from "@/components/custom/header";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={cn('min-h-screen bg-backgroud font-manrope antialiased', manrope.variable)}
       >
+        <Header />
         {children}
       </body>
     </html>
