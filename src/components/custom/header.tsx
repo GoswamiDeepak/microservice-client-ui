@@ -10,10 +10,8 @@ const Header = async () => {
                   revalidate: 3600, //1hr
             },
       });
-      // console.log(tenantResponse.ok);
       if (!tenantResponse.ok) {
             throw new Error('Failed to fetch Restaurants');
-            // return <div>Failed to load</div>;
       }
       const restaurants: { data: Restaurant[] } = await tenantResponse.json();
 

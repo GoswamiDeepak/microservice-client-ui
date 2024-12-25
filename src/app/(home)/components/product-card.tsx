@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import {
       Card,
       CardContent,
@@ -12,27 +13,28 @@ import { Label } from '@/components/ui/label';
 import ToppingList from './topping-list';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
+import { Product } from '@/lib/types';
 
-export interface Product {
-      _id: number;
-      name: string;
-      description: string;
-      image: string;
-      price: number;
-}
 type PropTypes = {
       product: Product;
 };
 const ProductCard = ({ product }: PropTypes) => {
+      const [imgSrc, setImgSrc] = useState(product.image); // remove it when s3 image url is available
+
+      const handleError = () => {
+            setImgSrc('/pizza.png'); // Path to your default image
+      };
       return (
             <div>
                   <Card className="border-none rounded-xl">
                         <CardHeader className="flex items-center justify-center">
                               <Image
                                     alt="pizza-img"
-                                    src={product.image}
+                                    // src={product.image}
+                                    src={imgSrc}
                                     width={150}
                                     height={150}
+                                    onError={handleError}
                               />
                         </CardHeader>
                         <CardContent>
@@ -45,7 +47,8 @@ const ProductCard = ({ product }: PropTypes) => {
                               <p>
                                     <span>From </span>
                                     <span className="font-bold">
-                                          {product.price}
+                                          {/* {product.price} */}
+                                          100
                                     </span>
                               </p>
                               <Dialog>

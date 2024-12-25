@@ -22,3 +22,20 @@ export interface Category {
     priceConfiguration: PriceConfiguaration;
     attributes: Attribute[];
 }
+export interface ProductAtrribute {
+    name: string;
+    value: string | boolean;
+}
+export interface Product {
+    _id: number | string;
+    name: string;
+    description: string; 
+    image: string;
+    category: Category | string;
+    status: boolean;
+    tenant: Restaurant;
+    isPublish: boolean;
+    createdAt: string;
+    attributes: ProductAtrribute[];
+    priceConfiguration: PriceConfiguaration;
+}

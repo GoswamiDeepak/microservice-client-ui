@@ -1,51 +1,33 @@
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Image from 'next/image';
-import ProductCard, { Product } from './components/product-card';
-import { Category } from '@/lib/types';
-
-const products: Product[] = [
-      {
-            _id: 1,
-            name: 'Pizza Margherita',
-            description: 'Pizza Marg',
-            image: '/pizza.png',
-            price: 500,
-      },
-      {
-            _id: 2,
-            name: 'Pizza Margherita',
-            description: 'Pizza Marg',
-            image: '/pizza.png',
-            price: 500,
-      },
-      {
-            _id: 3,
-            name: 'Pizza Margherita',
-            description: 'Pizza Marg',
-            image: '/pizza.png',
-            price: 500,
-      },
-      {
-            _id: 4,
-            name: 'Pizza Margherita',
-            description: 'Pizza Marg',
-            image: '/pizza.png',
-            price: 500,
-      },
-];
+import ProductCard from './components/product-card';
+import { Category, Product } from '@/lib/types';
 
 export default async function Home() {
-      const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
-            next: {
-                  revalidate: 3600,
-            },
-      });
+      //todo concurrent request -> Promise.all()
+      const [categoryResponse, productResponse] = await Promise.all([
+            fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
+                  next: {
+                        revalidate: 3600,
+                  },
+            }),
+            fetch(`${process.env.BACKEND_URL}/api/catalog/products`, {
+                  next: {
+                        revalidate: 3600,
+                  },
+            })
+      ]);
+
       if (!categoryResponse.ok) {
             throw new Error('Failed to fetch Categories!');
       }
-
       const categories = await categoryResponse.json();
+
+      if (!productResponse.ok) {
+            throw new Error('Failed to fetch Products!');
+      }
+      const products = await productResponse.json();
 
       return (
             <>
@@ -68,7 +50,7 @@ export default async function Home() {
                   </section>
                   <section>
                         <div className="contianer max-w-screen-xl mx-auto py-12">
-                              <Tabs defaultValue="pizza" className="">
+                              <Tabs defaultValue={categories[0]._id} className="">
                                     <TabsList>
                                           {categories.map((category: Category) => (
                                                 <TabsTrigger key={category._id} value={category._id} className="text-md">
@@ -76,20 +58,16 @@ export default async function Home() {
                                                 </TabsTrigger>
                                           ))}
                                     </TabsList>
-                                    <TabsContent value="pizza">
-                                          <div className="grid grid-cols-4 gap-4 mt-6">
-                                                {products.map((product) => (
-                                                      <ProductCard key={product._id} product={product} />
-                                                ))}
-                                          </div>
-                                    </TabsContent>
-                                    <TabsContent value="beverage">
-                                          <div className="grid grid-cols-4 gap-4 mt-6">
-                                                {products.map((product) => (
-                                                      <ProductCard key={product._id} product={product} />
-                                                ))}
-                                          </div>
-                                    </TabsContent>
+                                    {categories.map((category: Category) => (
+                                          <TabsContent key={category._id} value={category._id}>
+                                                <div className="grid grid-cols-4 gap-4 mt-6">
+                                                      {products.data.filter((product: Product)=> product.category && (product.category as Category)._id === category._id).map((product: Product) => (
+                                                            <ProductCard key={product._id} product={product} />
+                                                      ))}
+                                                </div>
+                                          </TabsContent>
+                                    ))}
+                                   
                               </Tabs>
                         </div>
                   </section>
