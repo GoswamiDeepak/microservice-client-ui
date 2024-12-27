@@ -5,9 +5,9 @@ import { Label } from '@/components/ui/label';
 import ToppingList from './topping-list';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
-import { Category, Product } from '@/lib/types';
+import { Category, Product, Topping } from '@/lib/types';
 import Photos from '@/components/custom/photos';
-import { Suspense, useState } from 'react';
+import { startTransition, Suspense, useState } from 'react';
 
 type ChoseConfig = {
       [key: string]: string;
@@ -15,12 +15,23 @@ type ChoseConfig = {
 
 const ProductModel = ({ product }: { product: Product }) => {
       const [chosenConfig, setChosenConfig] = useState<ChoseConfig>({});
+      const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
       const handleAddToCart = () => {
             console.log('Add to Cart.....');
       };
       const handleRadioConfig = (key: string, value: string) => {
             setChosenConfig((prev) => ({ ...prev, [key]: value }));
+      };
+      const handleCheckBox = (topping: Topping) => {
+            const isAlreadyExist = selectedToppings.some((element) => element._id === topping._id);
+            startTransition(() => {
+                  if (isAlreadyExist) {
+                        setSelectedToppings((prev) => prev.filter((elm) => elm._id !== topping._id));
+                        return;
+                  }
+                  setSelectedToppings((prev) => [...prev, topping]);
+            });
       };
       return (
             <Dialog>
@@ -69,7 +80,7 @@ const ProductModel = ({ product }: { product: Product }) => {
                                           );
                                     })}
                                     <Suspense fallback={'Loading Toppings...'}>
-                                          <ToppingList />
+                                          <ToppingList selectedToppings={selectedToppings} onHandleCheckBox={handleCheckBox} />
                                     </Suspense>
                                     <div className="flex justify-between items-center mt-12">
                                           <span className="font-bold">&#8377;400</span>

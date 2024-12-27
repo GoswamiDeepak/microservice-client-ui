@@ -1,5 +1,5 @@
 'use client';
-import React, { startTransition, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ToppingCard from './topping-card';
 import { Topping } from '@/lib/types';
 
@@ -27,9 +27,15 @@ import { Topping } from '@/lib/types';
 //       },
 // ];
 
-const ToppingList = () => {
+const ToppingList = ({
+      selectedToppings,
+      onHandleCheckBox,
+}: {
+      selectedToppings: Topping[];
+      onHandleCheckBox: (topping: Topping) => void;
+}) => {
       const [topping, setTopping] = useState<Topping[]>([]);
-      const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
+
       useEffect(() => {
             const fetchTopping = async () => {
                   const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=10`);
@@ -40,16 +46,6 @@ const ToppingList = () => {
             fetchTopping();
       }, []);
 
-      const handleCheckBox = (topping: Topping) => {
-            const isAlreadyExist = selectedToppings.some((element) => element._id === topping._id);
-            startTransition(() => {
-                  if (isAlreadyExist) {
-                        setSelectedToppings((prev) => prev.filter((elm) => elm._id !== topping._id));
-                        return;
-                  }
-                  setSelectedToppings((prev) => [...prev, topping]);
-            });
-      };
       return (
             <section className="mt-6">
                   <h3>Extra Topping</h3>
@@ -60,7 +56,7 @@ const ToppingList = () => {
                                           topping={topping}
                                           key={topping._id}
                                           selectedToppings={selectedToppings}
-                                          onHandleCheckBox={handleCheckBox}
+                                          onHandleCheckBox={onHandleCheckBox}
                                     />
                               );
                         })}
