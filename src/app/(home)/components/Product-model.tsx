@@ -105,9 +105,13 @@ const ProductModel = ({ product }: { product: Product }) => {
                                                 </div>
                                           );
                                     })}
-                                    <Suspense fallback={'Loading Toppings...'}>
-                                          <ToppingList selectedToppings={selectedToppings} onHandleCheckBox={handleCheckBox} />
-                                    </Suspense>
+                                    {/* todo:make this condtion dynamic (add hasToppings field in catgory document) */}
+                                    {product.category.name !== 'Beverages' && (
+                                          <Suspense fallback={'Loading Toppings...'}>
+                                                <ToppingList selectedToppings={selectedToppings} onHandleCheckBox={handleCheckBox} />
+                                          </Suspense>
+                                    )}
+
                                     <div className="flex justify-between items-center mt-12">
                                           <span className="font-bold">&#8377;{totalPrice}</span>
                                           <Button onClick={() => handleAddToCart(product)}>
