@@ -1,11 +1,12 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Phone, ShoppingBasket } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { Restaurant } from '@/lib/types';
+import CartCounter from './cart-counter';
 
 const Header = async () => {
-      const tenantResponse = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`,{
+      const tenantResponse = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`, {
             next: {
                   revalidate: 3600, //1hr
             },
@@ -52,14 +53,8 @@ const Header = async () => {
                                           </Link>
                                     </li>
                               </ul>
-                              <div className="relative">
-                                    <Link href={'/cart'}>
-                                          <ShoppingBasket className="hover:text-primary" />
-                                    </Link>
-                                    <span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white">
-                                          3
-                                    </span>
-                              </div>
+                              <CartCounter />
+
                               <div className="flex items-center  ml-10">
                                     <Phone />
                                     <span>+91 9149 280 457</span>
