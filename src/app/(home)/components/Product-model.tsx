@@ -8,17 +8,28 @@ import { ShoppingCart } from 'lucide-react';
 import { Category, Product, Topping } from '@/lib/types';
 import Photos from '@/components/custom/photos';
 import { startTransition, Suspense, useState } from 'react';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { addToCart } from '@/lib/store/features/cart/cartSlice';
 
 type ChoseConfig = {
       [key: string]: string;
 };
 
 const ProductModel = ({ product }: { product: Product }) => {
+      const dipatch = useAppDispatch();
       const [chosenConfig, setChosenConfig] = useState<ChoseConfig>({});
       const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
-      const handleAddToCart = () => {
+      const handleAddToCart = (product: Product) => {
             console.log('Add to Cart.....');
+            const itemToAdd = {
+                  product: product,
+                  chosenConfiguration: {
+                        priceConfiguration: chosenConfig!,
+                        selectedToppings: selectedToppings,
+                  },
+            };
+            dipatch(addToCart(itemToAdd));
       };
       const handleRadioConfig = (key: string, value: string) => {
             setChosenConfig((prev) => ({ ...prev, [key]: value }));
@@ -84,7 +95,7 @@ const ProductModel = ({ product }: { product: Product }) => {
                                     </Suspense>
                                     <div className="flex justify-between items-center mt-12">
                                           <span className="font-bold">&#8377;400</span>
-                                          <Button onClick={handleAddToCart}>
+                                          <Button onClick={()=>handleAddToCart(product)}>
                                                 <ShoppingCart size={20} />
                                                 <span className="ml-2">Add to Cart</span>
                                           </Button>
