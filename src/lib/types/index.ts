@@ -31,7 +31,7 @@ export interface Product {
     name: string;
     description: string; 
     image: string;
-    category: Category | string;
+    category: Category;
     status: boolean;
     tenant: Restaurant;
     isPublish: boolean;

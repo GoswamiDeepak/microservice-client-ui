@@ -17,7 +17,10 @@ type ChoseConfig = {
 
 const ProductModel = ({ product }: { product: Product }) => {
       const dipatch = useAppDispatch();
-      const [chosenConfig, setChosenConfig] = useState<ChoseConfig>({});
+      const defaultConfiguration = Object.entries(product.category.priceConfiguration).map(([key, value]) => {
+            return { [key]: value.availableOptions[0] };
+      }).reduce((acc, curr)=>({...acc, ...curr}),{})
+      const [chosenConfig, setChosenConfig] = useState<ChoseConfig>(defaultConfiguration as unknown as ChoseConfig);
       const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
       const handleAddToCart = (product: Product) => {
@@ -95,7 +98,7 @@ const ProductModel = ({ product }: { product: Product }) => {
                                     </Suspense>
                                     <div className="flex justify-between items-center mt-12">
                                           <span className="font-bold">&#8377;400</span>
-                                          <Button onClick={()=>handleAddToCart(product)}>
+                                          <Button onClick={() => handleAddToCart(product)}>
                                                 <ShoppingCart size={20} />
                                                 <span className="ml-2">Add to Cart</span>
                                           </Button>
