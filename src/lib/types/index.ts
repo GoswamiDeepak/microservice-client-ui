@@ -26,6 +26,15 @@ export interface ProductAtrribute {
     name: string;
     value: string | boolean;
 }
+
+export interface ProductPriceConfiguration {
+    [key: string]: {
+        priceType: "base" | "aditional";
+        availableOptions: {
+            [key:string] : number;
+        }
+    };
+}
 export interface Product {
     _id: number | string;
     name: string;
@@ -37,7 +46,7 @@ export interface Product {
     isPublish: boolean;
     createdAt: string;
     attributes: ProductAtrribute[];
-    priceConfiguration: PriceConfiguaration;
+    priceConfiguration: ProductPriceConfiguration;
 }
 export interface Topping {
     _id: number;

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { Category, Product, Topping } from '@/lib/types';
 import Photos from '@/components/custom/photos';
-import { startTransition, Suspense, useState } from 'react';
+import { startTransition, Suspense, useMemo, useState } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addToCart } from '@/lib/store/features/cart/cartSlice';
 
@@ -17,9 +17,11 @@ type ChoseConfig = {
 
 const ProductModel = ({ product }: { product: Product }) => {
       const dipatch = useAppDispatch();
-      const defaultConfiguration = Object.entries(product.category.priceConfiguration).map(([key, value]) => {
-            return { [key]: value.availableOptions[0] };
-      }).reduce((acc, curr)=>({...acc, ...curr}),{})
+      const defaultConfiguration = Object.entries(product.category.priceConfiguration)
+            .map(([key, value]) => {
+                  return { [key]: value.availableOptions[0] };
+            })
+            .reduce((acc, curr) => ({ ...acc, ...curr }), {});
       const [chosenConfig, setChosenConfig] = useState<ChoseConfig>(defaultConfiguration as unknown as ChoseConfig);
       const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
@@ -47,6 +49,16 @@ const ProductModel = ({ product }: { product: Product }) => {
                   setSelectedToppings((prev) => [...prev, topping]);
             });
       };
+
+      const totalPrice = useMemo(() => {
+            const toppingTotal = selectedToppings.reduce((acc, curr) => acc + Number(curr.price), 0);
+            const configPricing = Object.entries(chosenConfig).reduce((acc, [key, value]) => {
+                  const price = product.priceConfiguration[key].availableOptions[value];
+                  return acc + Number(price);
+            }, 0);
+            return toppingTotal + configPricing;
+      }, [chosenConfig, selectedToppings, product]);
+
       return (
             <Dialog>
                   <DialogTrigger className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
@@ -97,7 +109,7 @@ const ProductModel = ({ product }: { product: Product }) => {
                                           <ToppingList selectedToppings={selectedToppings} onHandleCheckBox={handleCheckBox} />
                                     </Suspense>
                                     <div className="flex justify-between items-center mt-12">
-                                          <span className="font-bold">&#8377;400</span>
+                                          <span className="font-bold">&#8377;{totalPrice}</span>
                                           <Button onClick={() => handleAddToCart(product)}>
                                                 <ShoppingCart size={20} />
                                                 <span className="ml-2">Add to Cart</span>
