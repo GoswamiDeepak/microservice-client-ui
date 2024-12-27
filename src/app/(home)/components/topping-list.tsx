@@ -34,7 +34,6 @@ const ToppingList = () => {
             const fetchTopping = async () => {
                   const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=10`);
                   const response = await result.json();
-                  console.log(response.data);
                   setTopping(response.data);
                   // setSelectedToppings([response.data[0]]);
             };
