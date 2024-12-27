@@ -1,32 +1,17 @@
-'use client';
-import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import Image from 'next/image';
-
 import { Product } from '@/lib/types';
 import ProductModel from './Product-model';
+import Photos from '@/components/custom/photos';
 
 type PropTypes = {
       product: Product;
 };
 const ProductCard = ({ product }: PropTypes) => {
-      const [imgSrc, setImgSrc] = useState(product.image); // remove it when s3 image url is available
-
-      const handleError = () => {
-            setImgSrc('/pizza.png'); // Path to your default image
-      };
       return (
             <div>
                   <Card className="border-none rounded-xl">
                         <CardHeader className="flex items-center justify-center">
-                              <Image
-                                    alt="pizza-img"
-                                    // src={product.image}
-                                    src={imgSrc}
-                                    width={150}
-                                    height={150}
-                                    onError={handleError}
-                              />
+                              <Photos alt="pizza-img" src={product.image} width={150} height={150} />
                         </CardHeader>
                         <CardContent>
                               <h2 className="text-xl font-bold">{product.name}</h2>
@@ -36,6 +21,7 @@ const ProductCard = ({ product }: PropTypes) => {
                               <p>
                                     <span>From </span>
                                     <span className="font-bold">
+                                          &#8377;
                                           {/* {product.price} */}
                                           100
                                     </span>

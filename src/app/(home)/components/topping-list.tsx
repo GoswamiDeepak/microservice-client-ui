@@ -1,44 +1,50 @@
-'use client'
-import React from 'react';
-import ToppingCard, { Topping } from './topping-card';
+'use client';
+import React, { useEffect, useState } from 'react';
+import ToppingCard from './topping-card';
+import { Topping } from '@/lib/types';
 
-const topping = [
-      {
-            id: 1,
-            name: 'Chicken',
-            image: '/pizza.png',
-            price: 50,
-            isAvailable: true,
-      },
-      {
-            id: 2,
-            name: 'Jelapeno',
-            image: '/pizza.png',
-            price: 50,
-            isAvailable: true,
-      },
-      {
-            id: 3,
-            name: 'Chesse',
-            image: '/pizza.png',
-            price: 50,
-            isAvailable: true,
-      },
-];
+// const topping = [
+//       {
+//             id: 1,
+//             name: 'Chicken',
+//             image: '/pizza.png',
+//             price: 50,
+//             isAvailable: true,
+//       },
+//       {
+//             id: 2,
+//             name: 'Jelapeno',
+//             image: '/pizza.png',
+//             price: 50,
+//             isAvailable: true,
+//       },
+//       {
+//             id: 3,
+//             name: 'Chesse',
+//             image: '/pizza.png',
+//             price: 50,
+//             isAvailable: true,
+//       },
+// ];
 
 const ToppingList = () => {
-      const [selectedToppings, setSelectedToppings] = React.useState([
-            topping[0],
-      ]);
+      const [topping, setTopping] = useState<Topping[]>([]);
+      const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
+      useEffect(() => {
+            const fetchTopping = async () => {
+                  const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=10`);
+                  const response = await result.json();
+                  console.log(response.data);
+                  setTopping(response.data);
+                  setSelectedToppings([response.data[0]]);
+            };
+            fetchTopping();
+      }, []);
 
       const handleCheckBox = (topping: Topping) => {
-            const isAlreadyExist = selectedToppings.some(
-                  (element) => element.id === topping.id
-            );
+            const isAlreadyExist = selectedToppings.some((element) => element._id === topping._id);
             if (isAlreadyExist) {
-                  setSelectedToppings((prev) =>
-                        prev.filter((elm) => elm.id !== topping.id)
-                  );
+                  setSelectedToppings((prev) => prev.filter((elm) => elm._id !== topping._id));
                   return;
             }
             setSelectedToppings((prev) => [...prev, topping]);
@@ -51,7 +57,7 @@ const ToppingList = () => {
                               return (
                                     <ToppingCard
                                           topping={topping}
-                                          key={topping.id}
+                                          key={topping._id}
                                           selectedToppings={selectedToppings}
                                           onHandleCheckBox={handleCheckBox}
                                     />
