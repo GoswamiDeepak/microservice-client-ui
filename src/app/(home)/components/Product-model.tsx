@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { Category, Product } from '@/lib/types';
 import Photos from '@/components/custom/photos';
+import { Suspense } from 'react';
 
 const ProductModel = ({ product }: { product: Product }) => {
       const handleAddToCart = () => {
@@ -57,7 +58,9 @@ const ProductModel = ({ product }: { product: Product }) => {
                                                 </div>
                                           );
                                     })}
-                                    <ToppingList />
+                                    <Suspense fallback={'Loading Toppings...'}>
+                                          <ToppingList />
+                                    </Suspense>
                                     <div className="flex justify-between items-center mt-12">
                                           <span className="font-bold">&#8377;400</span>
                                           <Button onClick={handleAddToCart}>
