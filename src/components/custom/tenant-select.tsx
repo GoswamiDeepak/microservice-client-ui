@@ -25,7 +25,7 @@ const TenantSelect = ({
     return (
         <Select
             onValueChange={handleValueChange}
-            defaultValue={searchParams.get('restaurantId') || ''}>
+            defaultValue={searchParams.get('restaurentId') || ''}>
             <SelectTrigger className="w-[180px] focus:ring-0">
                 <SelectValue placeholder="Select Restuarents" />
             </SelectTrigger>

@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge"
 import { CartItem } from "./store/features/cart/cartSlice"
 import CryptoJS from "crypto-js"
 import { Product } from "./types"
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -22,4 +23,14 @@ export function getFromPrice(product:Product){
     return acc + smallestPrice
   },0)
   return basePrice;
+}
+
+export function cartConfig(cartItem: CartItem) {
+  const config = Object.values(cartItem.chosenConfiguration.priceConfiguration).join(', ')
+  return config
+}
+
+export function cartSelectedToppings(cartItem: CartItem){
+  const config = cartItem.chosenConfiguration.selectedToppings.map((item)=>item.name).join(', ')
+  return config
 }

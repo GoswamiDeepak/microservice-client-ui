@@ -2,6 +2,7 @@ import { Product, Topping } from '@/lib/types'
 import { hashTheItem } from '@/lib/utils';
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { M_PLUS_1 } from 'next/font/google';
 
 export interface CartItem extends Pick<Product, '_id' | 'name' | 'image' | 'priceConfiguration'>{
   // product: Pick<Product, '_id' | 'name' | 'image' | 'priceConfiguration'>;
@@ -43,11 +44,16 @@ export const cartSlice = createSlice({
     },
     setInitialCartItems: (state, action: PayloadAction<CartItem[]>)=>{
       state.cartItem.push(...action.payload)
+    },
+    changeQty : (state, action: PayloadAction<{hash:string, qty:number}>)=>{
+      const itemIndex = state.cartItem.findIndex((item)=>item.hash === action.payload.hash)
+      state.cartItem[itemIndex].qty = Math.max(1, state.cartItem[itemIndex].qty + action.payload.qty)
+      window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem))
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addToCart, setInitialCartItems } = cartSlice.actions
+export const { addToCart, setInitialCartItems, changeQty } = cartSlice.actions
 
 export default cartSlice.reducer

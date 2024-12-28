@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import ToppingCard from './topping-card';
 import { Topping } from '@/lib/types';
+import { useSearchParams } from 'next/navigation';
 
 // const topping = [
 //       {
@@ -28,41 +29,48 @@ import { Topping } from '@/lib/types';
 // ];
 
 const ToppingList = ({
-      selectedToppings,
-      onHandleCheckBox,
+    selectedToppings,
+    onHandleCheckBox,
 }: {
-      selectedToppings: Topping[];
-      onHandleCheckBox: (topping: Topping) => void;
+    selectedToppings: Topping[];
+    onHandleCheckBox: (topping: Topping) => void;
 }) => {
-      const [topping, setTopping] = useState<Topping[]>([]);
+    const searchParams = useSearchParams();
+    const [topping, setTopping] = useState<Topping[]>([]);
 
-      useEffect(() => {
-            const fetchTopping = async () => {
-                  const result = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=10`);
-                  const response = await result.json();
-                  setTopping(response.data);
-                  // setSelectedToppings([response.data[0]]);
-            };
-            fetchTopping();
-      }, []);
+    useEffect(() => {
+        const fetchTopping = async () => {
+            const result = await fetch(
+                `${
+                    process.env.NEXT_PUBLIC_BACKEND_URL
+                }/api/catalog/toppings?tenantId=${searchParams.get(
+                    'restaurentId'
+                )}`
+            );
+            const response = await result.json();
+            setTopping(response.data);
+            // setSelectedToppings([response.data[0]]);
+        };
+        fetchTopping();
+    }, []);
 
-      return (
-            <section className="mt-6">
-                  <h3>Extra Topping</h3>
-                  <div className="grid grid-cols-3 gap-4 mt-2">
-                        {topping.map((topping) => {
-                              return (
-                                    <ToppingCard
-                                          topping={topping}
-                                          key={topping._id}
-                                          selectedToppings={selectedToppings}
-                                          onHandleCheckBox={onHandleCheckBox}
-                                    />
-                              );
-                        })}
-                  </div>
-            </section>
-      );
+    return (
+        <section className="mt-6">
+            <h3>Extra Topping</h3>
+            <div className="grid grid-cols-3 gap-4 mt-2">
+                {topping.map((topping) => {
+                    return (
+                        <ToppingCard
+                            topping={topping}
+                            key={topping._id}
+                            selectedToppings={selectedToppings}
+                            onHandleCheckBox={onHandleCheckBox}
+                        />
+                    );
+                })}
+            </div>
+        </section>
+    );
 };
 
 export default ToppingList;
