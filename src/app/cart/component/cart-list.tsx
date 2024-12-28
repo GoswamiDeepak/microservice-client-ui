@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import CartItems from './cart-items';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CartItem } from '@/lib/store/features/cart/cartSlice';
+import { getTotalPrice } from '@/lib/utils';
 
 const CartList = () => {
     const searchParams = useSearchParams();
@@ -17,6 +18,12 @@ const CartList = () => {
     }, []);
 
     const cart = useAppSelector((state) => state.cart.cartItem);
+
+    const finalTotalPrice = useMemo(() => {
+        return cart.reduce((acc, item) => {
+            return acc + item.qty * getTotalPrice(item);
+        }, 0);
+    }, [cart]);
 
     if (!isClient) {
         return null;
@@ -39,6 +46,7 @@ const CartList = () => {
             </div>
         );
     }
+
     return (
         <>
             {cart.map((item: CartItem) => {
@@ -46,7 +54,9 @@ const CartList = () => {
             })}
 
             <div className="flex justify-between mt-6">
-                <p className="text-lg font-semibold">&#8377; 500</p>
+                <p className="text-lg font-semibold">
+                    &#8377; {finalTotalPrice}
+                </p>
                 <Button>Checkout</Button>
             </div>
         </>
