@@ -5,10 +5,21 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import CartItems from './cart-items';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 
 const CartList = () => {
-    const cart = useAppSelector((state) => state.cart.cartItem);
     const searchParams = useSearchParams();
+    const [isClient, setIsClient] = useState<Boolean>(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const cart = useAppSelector((state) => state.cart.cartItem);
+
+    if (!isClient) {
+        return null;
+    }
 
     if (!cart.length) {
         return (

@@ -47,6 +47,11 @@ export const cartSlice = createSlice({
     },
     changeQty : (state, action: PayloadAction<{hash:string, qty:number}>)=>{
       const itemIndex = state.cartItem.findIndex((item)=>item.hash === action.payload.hash)
+      if(action.payload.qty === 0) {
+        state.cartItem.splice(itemIndex, 1)
+        window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem))
+        return
+      }
       state.cartItem[itemIndex].qty = Math.max(1, state.cartItem[itemIndex].qty + action.payload.qty)
       window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem))
     }

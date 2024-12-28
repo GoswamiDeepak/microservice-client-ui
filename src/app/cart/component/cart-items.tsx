@@ -1,4 +1,3 @@
-
 import Photos from '@/components/custom/photos';
 import { CartItem, changeQty } from '@/lib/store/features/cart/cartSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
@@ -50,13 +49,23 @@ const CartItems = ({ cart }: { cart: CartItem[] }) => {
                                 &#8377; 200
                                 {/* {item.price * item.quantity} */}
                             </p>
-                            <button className="ml-6 text-gray-500 hover:text-red-500">
+                            <button
+                                className="ml-6 text-gray-500 hover:text-red-500"
+                                onClick={() => {
+                                    dispath(
+                                        changeQty({
+                                            hash: item.hash as string,
+                                            qty: 0,
+                                        })
+                                    );
+                                }}>
                                 &times;
                             </button>
                         </div>
                     </div>
                 );
             })}
+           
         </>
     );
 };
