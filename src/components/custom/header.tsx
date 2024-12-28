@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import { Restaurant } from '@/lib/types';
 import dynamic from 'next/dynamic';
+import TenantSelect from './tenant-select';
 
 const CartCounterWithoutSSR = dynamic(() => import('./cart-counter'), { ssr: false });
 
@@ -11,7 +12,7 @@ const Header = async () => {
       const tenantResponse = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants?perPage=100`, {
             next: {
                   revalidate: 3600, //1hr
-            },
+            }, 
       });
       if (!tenantResponse.ok) {
             throw new Error('Failed to fetch Restaurants');
@@ -29,18 +30,7 @@ const Header = async () => {
                                     />
                                     <circle cx="11" cy="11" r="7.5" stroke="#F65F42" strokeWidth="7" />
                               </svg>
-                              <Select>
-                                    <SelectTrigger className="w-[180px] focus:ring-0">
-                                          <SelectValue placeholder="Select Restuarents" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                          {restaurants.data.map((restaurant: Restaurant) => (
-                                                <SelectItem key={restaurant.id} value={restaurant.id}>
-                                                      {restaurant.name}
-                                                </SelectItem>
-                                          ))}
-                                    </SelectContent>
-                              </Select>
+                              <TenantSelect restaurants={restaurants} />
                         </div>
                         <div className="flex item-center gap-x-4">
                               <ul className="flex items-center space-x-4 font-medium">
