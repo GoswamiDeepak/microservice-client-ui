@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import ToppingList from './topping-list';
 import { Button } from '@/components/ui/button';
-import { ParkingCircleOffIcon, ShoppingCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Category, Product, Topping } from '@/lib/types';
 import Photos from '@/components/custom/photos';
 import { startTransition, Suspense, useMemo, useState } from 'react';
@@ -19,6 +19,8 @@ type ChoseConfig = {
 const ProductModel = ({ product }: { product: Product }) => {
     const dipatch = useAppDispatch();
     const cartItems = useAppSelector((state) => state.cart.cartItem);
+
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const defaultConfiguration = Object.entries(
         product.category.priceConfiguration
@@ -46,6 +48,7 @@ const ProductModel = ({ product }: { product: Product }) => {
             qty: 1,
         };
         dipatch(addToCart(itemToAdd));
+        setDialogOpen(false);
     };
 
     const handleRadioConfig = (key: string, value: string) => {
@@ -100,7 +103,7 @@ const ProductModel = ({ product }: { product: Product }) => {
     }, [product, chosenConfig, selectedToppings, cartItems]);
 
     return (
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
                 Choose
             </DialogTrigger>
