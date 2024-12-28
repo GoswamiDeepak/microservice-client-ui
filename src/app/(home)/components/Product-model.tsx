@@ -18,9 +18,8 @@ type ChoseConfig = {
 
 const ProductModel = ({ product }: { product: Product }) => {
     const dipatch = useAppDispatch();
-    const cartItems = useAppSelector((state) => state.cart.cartItem);
 
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const cartItems = useAppSelector((state) => state.cart.cartItem);
 
     const defaultConfiguration = Object.entries(
         product.category.priceConfiguration
@@ -29,6 +28,8 @@ const ProductModel = ({ product }: { product: Product }) => {
             return { [key]: value.availableOptions[0] };
         })
         .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const [chosenConfig, setChosenConfig] = useState<ChoseConfig>(
         defaultConfiguration as unknown as ChoseConfig
@@ -48,6 +49,8 @@ const ProductModel = ({ product }: { product: Product }) => {
             qty: 1,
         };
         dipatch(addToCart(itemToAdd));
+        setSelectedToppings([]);
+        //   setChosenConfig(defaultConfiguration)
         setDialogOpen(false);
     };
 
