@@ -5,6 +5,7 @@ import { Manrope } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import Header from '@/components/custom/header';
 import StoreProvider from './StoreProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -37,7 +38,8 @@ export default function RootLayout({
                   <StoreProvider>
                         <body className={cn('min-h-screen bg-backgroud font-manrope antialiased', manrope.variable)}>
                               <Header />
-                              {children}
+                              <main>{children}</main>
+                              <Toaster />
                         </body>
                   </StoreProvider>
             </html>

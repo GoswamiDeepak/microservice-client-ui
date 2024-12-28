@@ -11,12 +11,16 @@ import { startTransition, Suspense, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { addToCart, CartItem } from '@/lib/store/features/cart/cartSlice';
 import { hashTheItem } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import SuccessToast from '@/components/custom/success-toast';
 
 type ChoseConfig = {
     [key: string]: string;
 };
 
 const ProductModel = ({ product }: { product: Product }) => {
+    const { toast } = useToast();
+
     const dipatch = useAppDispatch();
 
     const cartItems = useAppSelector((state) => state.cart.cartItem);
@@ -52,6 +56,10 @@ const ProductModel = ({ product }: { product: Product }) => {
         setSelectedToppings([]);
         //   setChosenConfig(defaultConfiguration)
         setDialogOpen(false);
+        toast({
+            //@ts-ignore
+            title: <SuccessToast />,
+        });
     };
 
     const handleRadioConfig = (key: string, value: string) => {
