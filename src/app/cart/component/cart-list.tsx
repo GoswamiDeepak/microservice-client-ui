@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import CartItems from './cart-items';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { CartItem } from '@/lib/store/features/cart/cartSlice';
 
 const CartList = () => {
     const searchParams = useSearchParams();
@@ -40,7 +41,10 @@ const CartList = () => {
     }
     return (
         <>
-            <CartItems cart={cart} />
+            {cart.map((item: CartItem) => {
+                return <CartItems item={item} />;
+            })}
+
             <div className="flex justify-between mt-6">
                 <p className="text-lg font-semibold">&#8377; 500</p>
                 <Button>Checkout</Button>
