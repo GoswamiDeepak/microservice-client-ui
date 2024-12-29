@@ -11,7 +11,7 @@ import { getTotalPrice } from '@/lib/utils';
 
 const CartList = () => {
     const searchParams = useSearchParams();
-    const [isClient, setIsClient] = useState<Boolean>(false);
+    const [isClient, setIsClient] = useState<boolean>(false);
 
     useEffect(() => {
         setIsClient(true);
@@ -50,7 +50,7 @@ const CartList = () => {
     return (
         <>
             {cart.map((item: CartItem) => {
-                return <CartItems item={item} />;
+                return <CartItems item={item} key={item._id} />;
             })}
 
             <div className="flex justify-between mt-6">
