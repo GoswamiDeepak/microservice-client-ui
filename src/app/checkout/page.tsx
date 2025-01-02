@@ -1,4 +1,3 @@
-
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/session';
 import CheckoutForm from './components/CheckoutForm';

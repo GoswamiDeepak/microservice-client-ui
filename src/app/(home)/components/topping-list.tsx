@@ -41,18 +41,15 @@ const ToppingList = ({
     useEffect(() => {
         const fetchTopping = async () => {
             const result = await fetch(
-                `${
-                    process.env.NEXT_PUBLIC_BACKEND_URL
-                }/api/catalog/toppings?tenantId=${searchParams.get(
-                    'restaurentId'
-                )}`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=${searchParams.get('restaurentId')}`
             );
             const response = await result.json();
+            console.log(response);
             setTopping(response.data);
             // setSelectedToppings([response.data[0]]);
         };
         fetchTopping();
-    }, []);
+    }, [searchParams]);
 
     return (
         <section className="mt-6">

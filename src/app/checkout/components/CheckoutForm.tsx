@@ -1,3 +1,4 @@
+'use client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -5,8 +6,22 @@ import { Button } from '@/components/ui/button';
 import AddressModel from './address-model';
 import AddressList from './address-list';
 import ChoosePayment from './choose-payment';
+import { useQuery } from '@tanstack/react-query';
+import { getCustomer } from '@/lib/http/api';
 
 const CheckoutForm = () => {
+    const { data: customer, isLoading } = useQuery({
+        queryKey: ['customer'],
+        queryFn: async () => {
+            return await getCustomer().then((res) => res.data);
+        },
+    });
+    console.log(customer);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="container max-w-screen-xl mx-auto py-5">
             <div className="grid grid-cols-12 gap-4">
@@ -16,19 +31,19 @@ const CheckoutForm = () => {
                         <Label htmlFor="firstname" className="text-[16px] font-semibold">
                             FirstName
                         </Label>
-                        <Input className="mt-2" type="firstname" id="firstname" placeholder="FirstName" />
+                        <Input className="mt-2" type="firstname" id="firstname" placeholder="FirstName" value={customer?.firstname} />
                     </div>
                     <div className="w-full mt-4">
                         <Label htmlFor="lastname" className="text-[16px] font-semibold">
                             Lastname
                         </Label>
-                        <Input className="mt-2" type="lastname" id="lastname" placeholder="Lastname" />
+                        <Input className="mt-2" type="lastname" id="lastname" placeholder="Lastname" value={customer?.lastname} />
                     </div>
                     <div className="w-full mt-4">
                         <Label htmlFor="email" className="text-[16px] font-semibold">
                             Email
                         </Label>
-                        <Input type="email" id="email" placeholder="Email" className="mt-2" />
+                        <Input type="email" id="email" placeholder="Email" className="mt-2" value={customer?.email} />
                     </div>
                     <div className="flex justify-between items-center mt-4">
                         <p className="text-[16px] font-semibold">Address</p>
