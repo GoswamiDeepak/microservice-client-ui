@@ -7,6 +7,7 @@ import Header from '@/components/custom/header';
 import StoreProvider from './StoreProvider';
 import { Toaster } from '@/components/ui/toaster';
 import Refresher from '@/components/custom/refresher';
+import QueryProvider from './QueryProvider';
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -38,11 +39,13 @@ export default function RootLayout({
       > */}
             <StoreProvider>
                 <body className={cn('min-h-screen bg-backgroud font-manrope antialiased', manrope.variable)}>
-                    <Refresher>
-                        <Header />
-                        <main>{children}</main>
-                        <Toaster />
-                    </Refresher>
+                    <QueryProvider>
+                        <Refresher>
+                            <Header />
+                            <main>{children}</main>
+                            <Toaster />
+                        </Refresher>
+                    </QueryProvider>
                 </body>
             </StoreProvider>
         </html>
