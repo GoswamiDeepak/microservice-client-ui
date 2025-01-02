@@ -7,8 +7,16 @@ import AddressList from './components/address-list';
 import ChoosePayment from './components/choose-payment';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/lib/session';
 
-const CheckoutPage = () => {
+const CheckoutPage = async () => {
+    const session = await getSession();
+
+    if(!session) {
+        redirect('/login')
+    }
+    
     return (
         <div className="container max-w-screen-xl mx-auto py-5">
             <div className="grid grid-cols-12 gap-4">
