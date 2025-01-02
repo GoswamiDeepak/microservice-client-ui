@@ -6,11 +6,13 @@ import login from '@/lib/actions/login';
 import { LoaderCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 
 const SubmitButton = () => {
     const { pending } = useFormStatus();
+
     return (
         <Button>
             {pending ? (
@@ -32,11 +34,13 @@ const initialState = {
 
 const LoginPage = () => {
     const [state, formAction] = useFormState(login, initialState);
+    const searchParams = useSearchParams();
+    const returnTo = searchParams.get('return-to');
 
-    if (state.type === 'sucess') {
-        window.location.href = '/';
+    if (state.type === "success") {
+        window.location.href = returnTo ? returnTo : '/';
     }
-    
+
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
             <div className="flex items-center justify-center py-12">

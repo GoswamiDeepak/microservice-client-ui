@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import ProductList from './components/Product-list';
-import { Suspense } from 'react';
+import { Suspense } from 'react'; 
 
 export default async function Home({searchParams } : {searchParams: { restaurentId: string}}) {
+      
       return (
             <>
                   <section className="bg-white">

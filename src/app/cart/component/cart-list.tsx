@@ -35,11 +35,7 @@ const CartList = () => {
                 <ShoppingCart />
                 <p className="text-gray-500">
                     Your cart is empty!
-                    <Link
-                        href={`/?restaurentId=${searchParams.get(
-                            'restaurentId'
-                        )}`}
-                        className="text-orange-500 ml-4">
+                    <Link href={`/?restaurentId=${searchParams.get('restaurentId')}`} className="text-orange-500 ml-4">
                         Continue Shopping
                     </Link>
                 </p>
@@ -54,10 +50,10 @@ const CartList = () => {
             })}
 
             <div className="flex justify-between mt-6">
-                <p className="text-lg font-semibold">
-                    &#8377; {finalTotalPrice}
-                </p>
-                <Button>Checkout</Button>
+                <p className="text-lg font-semibold">&#8377; {finalTotalPrice}</p>
+                <Button>
+                    <Link href={`/checkout?restaurentId=${searchParams.get('restaurentId')}`}>Checkout</Link>
+                </Button>
             </div>
         </>
     );
