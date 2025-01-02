@@ -8,15 +8,15 @@ import AddressList from './address-list';
 import ChoosePayment from './choose-payment';
 import { useQuery } from '@tanstack/react-query';
 import { getCustomer } from '@/lib/http/api';
+import { Customer } from '@/lib/types';
 
 const CheckoutForm = () => {
-    const { data: customer, isLoading } = useQuery({
+    const { data: customer, isLoading } = useQuery<Customer>({
         queryKey: ['customer'],
         queryFn: async () => {
             return await getCustomer().then((res) => res.data);
         },
     });
-    console.log(customer);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -50,7 +50,7 @@ const CheckoutForm = () => {
                         <AddressModel />
                     </div>
                     <div className="mt-4">
-                        <AddressList />
+                        <AddressList address={customer?.address || []} />
                     </div>
                     <div className="mt-4 ">
                         <p className="text-[16px] font-semibold ">Choose Payment</p>

@@ -55,3 +55,16 @@ export interface Topping {
     price: number;
     isAvailable: boolean;
 }
+
+export interface Address {
+    text: string;
+    isDefault: boolean;
+}
+
+export interface Customer {
+    _id: string;
+    firstname: string;
+    lastname: string;
+    email:string;
+    address: Address[]
+}
