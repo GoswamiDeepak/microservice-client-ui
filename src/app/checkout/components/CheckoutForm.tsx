@@ -3,16 +3,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import AddressModel from './address-model';
 import AddressList from './address-list';
 import ChoosePayment from './choose-payment';
 import { useQuery } from '@tanstack/react-query';
 import { getCustomer } from '@/lib/http/api';
 import { Customer } from '@/lib/types';
+import AddAddress from './address-model';
 
 const CheckoutForm = () => {
     const { data: customer, isLoading } = useQuery<Customer>({
-        queryKey: ['customer'],
+        queryKey: ['acustomer'],
         queryFn: async () => {
             return await getCustomer().then((res) => res.data);
         },
@@ -31,23 +31,23 @@ const CheckoutForm = () => {
                         <Label htmlFor="firstname" className="text-[16px] font-semibold">
                             FirstName
                         </Label>
-                        <Input className="mt-2" type="firstname" id="firstname" placeholder="FirstName" value={customer?.firstname} />
+                        <Input className="mt-2" type="firstname" id="firstname" placeholder="FirstName" defaultValue={customer?.firstname} />
                     </div>
                     <div className="w-full mt-4">
                         <Label htmlFor="lastname" className="text-[16px] font-semibold">
                             Lastname
                         </Label>
-                        <Input className="mt-2" type="lastname" id="lastname" placeholder="Lastname" value={customer?.lastname} />
+                        <Input className="mt-2" type="lastname" id="lastname" placeholder="Lastname" defaultValue={customer?.lastname} />
                     </div>
                     <div className="w-full mt-4">
                         <Label htmlFor="email" className="text-[16px] font-semibold">
                             Email
                         </Label>
-                        <Input type="email" id="email" placeholder="Email" className="mt-2" value={customer?.email} />
+                        <Input type="email" id="email" placeholder="Email" className="mt-2" defaultValue={customer?.email} />
                     </div>
-                    <div className="flex justify-between items-center mt-4">
+                    <div className="flex justify-between items-center mt-4 w-full">
                         <p className="text-[16px] font-semibold">Address</p>
-                        <AddressModel />
+                        <AddAddress customerId={customer?._id || ''} />
                     </div>
                     <div className="mt-4">
                         <AddressList address={customer?.address || []} />
