@@ -68,3 +68,8 @@ export interface Customer {
     email:string;
     address: Address[]
 }
+
+export interface ICouponData {
+    code: string;
+    tenantId: string;
+}

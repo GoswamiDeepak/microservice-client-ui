@@ -37,7 +37,7 @@ const LoginPage = () => {
     const searchParams = useSearchParams();
     const returnTo = searchParams.get('return-to');
 
-    if (state.type === "success") {
+    if (state.type === 'success') {
         window.location.href = returnTo ? returnTo : '/';
     }
 
@@ -61,7 +61,7 @@ const LoginPage = () => {
                                     type="email"
                                     name="email"
                                     placeholder="****@example.com"
-                                    value="deepakgoswami1@gmail.com"
+                                    defaultValue="deepakgoswami1@gmail.com"
                                     required
                                 />
                             </div>
@@ -72,7 +72,7 @@ const LoginPage = () => {
                                         Forget your password?
                                     </Link>
                                 </div>
-                                <Input id="password" name="password" type="password" value="secret" required />
+                                <Input id="password" name="password" type="password" defaultValue="secret" required />
                             </div>
                             <SubmitButton />
                         </div>
