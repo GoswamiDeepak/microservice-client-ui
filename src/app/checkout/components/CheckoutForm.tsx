@@ -15,6 +15,7 @@ import AddAddress from './address-model';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
+import OrderSummary from './order-summary';
 
 const formSchema = z.object({
     address: z.string({ required_error: 'Please select an address.' }),
@@ -178,38 +179,7 @@ const CheckoutForm = () => {
                             </div>
                         </div>
                         <div className="col-span-4 ">
-                            <div className="bg-white rounded-lg p-6">
-                                <h3 className="font-bold text-xl">Order Summary</h3>
-                                <div className="space-y-2 mt-4 border-b pb-4">
-                                    <div className="flex justify-between items-center">
-                                        <p>SubTotal</p>
-                                        <p className="font-bold text-l">&#8377;200</p>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <p>Taxes</p>
-                                        <p className="font-bold text-l">&#8377;200</p>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <p>Delivery Charges</p>
-                                        <p className="font-bold text-l">&#8377;200</p>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <p>Discount</p>
-                                        <p className="font-bold text-l">&#8377;200</p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <p className="font-bold">Total Order</p>
-                                    <p className="font-bold text-l">&#8377;200</p>
-                                </div>
-                                <div className="flex w-full max-w-sm items-center space-x-2 mt-5">
-                                    <Input type="text" placeholder="Coupon Code" />
-                                    <Button className="bg-white text-black border">Apply</Button>
-                                </div>
-                                <div className="flex justify-end mt-5">
-                                    <Button>Place Order</Button>
-                                </div>
-                            </div>
+                            <OrderSummary />
                         </div>
                     </div>
                 </div>
