@@ -47,8 +47,11 @@ const AddAddress = ({ customerId }: { customerId: string }) => {
         },
     });
 
-    const handleAddressAdd = (data: z.infer<typeof formSchema>) => {
-        mutate(data.address);
+    const handleAddressAdd = (e: React.FormEvent<HTMLFormElement>) => {
+        e.stopPropagation();
+        return addAddressForm.handleSubmit((data: z.infer<typeof formSchema>) => {
+            mutate(data.address);
+        })(e);
     };
     return (
         <Dialog open={isModelOpen} onOpenChange={setIsModelOpen}>
@@ -65,7 +68,7 @@ const AddAddress = ({ customerId }: { customerId: string }) => {
                     <DialogDescription>We can save your address for the next time</DialogDescription>
                 </DialogHeader>
                 <Form {...addAddressForm}>
-                    <form onSubmit={addAddressForm.handleSubmit(handleAddressAdd)}>
+                    <form onSubmit={handleAddressAdd}>
                         <div className="grid gap-4 py-4">
                             <div>
                                 <Label htmlFor="address">Address</Label>

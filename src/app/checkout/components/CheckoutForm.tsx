@@ -1,21 +1,20 @@
 'use client';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Coins, CreditCard } from 'lucide-react';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import AddressList from './address-list';
-import ChoosePayment from './choose-payment';
 import { useQuery } from '@tanstack/react-query';
 import { getCustomer } from '@/lib/http/api';
 import { Customer } from '@/lib/types';
 import AddAddress from './address-model';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
-import { Coins, CreditCard } from 'lucide-react';
 
 const formSchema = z.object({
     address: z.string({ required_error: 'Please select an address.' }),
@@ -39,7 +38,8 @@ const CheckoutForm = () => {
     }
 
     const handlePlaceOrder = (data: z.infer<typeof formSchema>) => {
-        console.log('place order',data)
+        //HANDLE THE PLACE ORDER
+        console.log('place order', data);
     };
 
     return (
@@ -91,7 +91,7 @@ const CheckoutForm = () => {
                                                                         <FormControl>
                                                                             <RadioGroupItem value={data?.text} id={data?.text} />
                                                                         </FormControl>
-                                                                        <Label htmlFor="address1">{data?.text}</Label>
+                                                                        <Label htmlFor={data?.text}>{data?.text}</Label>
                                                                     </div>
                                                                 </CardContent>
                                                             </Card>
@@ -153,7 +153,6 @@ const CheckoutForm = () => {
                                                             </Label>
                                                         </div>
                                                     </RadioGroup>
-                                                    {/* <ChoosePayment /> */}
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
