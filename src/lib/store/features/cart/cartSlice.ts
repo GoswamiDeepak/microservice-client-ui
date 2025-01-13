@@ -1,64 +1,73 @@
-import { Product, Topping } from '@/lib/types'
-import { hashTheItem } from '@/lib/utils';
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { M_PLUS_1 } from 'next/font/google';
+import { Product, Topping } from '@/lib/types'; // Import types for Product and Topping
+import { hashTheItem } from '@/lib/utils'; // Import utility function to hash cart items
+import { createSlice } from '@reduxjs/toolkit'; // Import createSlice from Redux Toolkit
+import type { PayloadAction } from '@reduxjs/toolkit'; // Import PayloadAction for type-safe actions
 
-export interface CartItem extends Pick<Product, '_id' | 'name' | 'image' | 'priceConfiguration'>{
-  // product: Pick<Product, '_id' | 'name' | 'image' | 'priceConfiguration'>;
+// Define the CartItem interface, extending properties from Product
+export interface CartItem extends Pick<Product, '_id' | 'name' | 'image' | 'priceConfiguration'> {
   chosenConfiguration: {
     priceConfiguration: {
-      [key: string]: string;
+      [key: string]: string; // Dynamic key-value pairs for price configuration
     };
-    selectedToppings: Topping[];
+    selectedToppings: Topping[]; // Array of selected toppings
   };
-  qty: number;
-  hash?: string;
+  qty: number; // Quantity of the item in the cart
+  hash?: string; // Optional hash to uniquely identify the cart item
 }
+
+// Define the CartState interface
 export interface CartState {
-  cartItem: CartItem[] 
+  cartItem: CartItem[]; // Array of cart items
 }
 
+// Initial state for the cart slice
 const initialState: CartState = {
-  cartItem: [],
-}
+  cartItem: [], // Start with an empty cart
+};
 
+// Create the cart slice using createSlice
 export const cartSlice = createSlice({
-  name: 'cart',
-  initialState,
+  name: 'cart', // Name of the slice
+  initialState, // Initial state
   reducers: {
+    // Reducer to add an item to the cart
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const hash = hashTheItem(action.payload)
+      const hash = hashTheItem(action.payload); // Generate a hash for the cart item
       const newItem = {
-        ...action.payload,
-        hash: hash
-        // product: action.payload.product,
-        // chosenConfiguration: action.payload.chosenConfiguration
-      }
-      window.localStorage.setItem('cartItems', JSON.stringify([...state.cartItem,newItem]))
-
+        ...action.payload, // Spread the payload (cart item)
+        hash: hash, // Add the generated hash
+      };
+      // Update localStorage with the new cart items
+      window.localStorage.setItem('cartItems', JSON.stringify([...state.cartItem, newItem]));
+      // Return the updated state with the new item added
       return {
-        cartItem: [...state.cartItem, newItem] 
+        cartItem: [...state.cartItem, newItem],
+      };
+    },
 
-      }
+    // Reducer to set initial cart items (e.g., from localStorage)
+    setInitialCartItems: (state, action: PayloadAction<CartItem[]>) => {
+      state.cartItem.push(...action.payload); // Add the payload items to the cart
     },
-    setInitialCartItems: (state, action: PayloadAction<CartItem[]>)=>{
-      state.cartItem.push(...action.payload)
-    },
-    changeQty : (state, action: PayloadAction<{hash:string, qty:number}>)=>{
-      const itemIndex = state.cartItem.findIndex((item)=>item.hash === action.payload.hash)
-      if(action.payload.qty === 0) {
-        state.cartItem.splice(itemIndex, 1)
-        window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem))
-        return
+
+    // Reducer to change the quantity of a cart item
+    changeQty: (state, action: PayloadAction<{ hash: string; qty: number }>) => {
+      const itemIndex = state.cartItem.findIndex((item) => item.hash === action.payload.hash); // Find the item by hash
+      if (action.payload.qty === 0) {
+        // If quantity is 0, remove the item from the cart
+        state.cartItem.splice(itemIndex, 1);
+      } else {
+        // Otherwise, update the item's quantity (ensure it's at least 1)
+        state.cartItem[itemIndex].qty = Math.max(1, state.cartItem[itemIndex].qty + action.payload.qty);
       }
-      state.cartItem[itemIndex].qty = Math.max(1, state.cartItem[itemIndex].qty + action.payload.qty)
-      window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem))
-    }
+      // Update localStorage with the modified cart items
+      window.localStorage.setItem('cartItems', JSON.stringify(state.cartItem));
+    },
   },
-})
+});
 
-// Action creators are generated for each case reducer function
-export const { addToCart, setInitialCartItems, changeQty } = cartSlice.actions
+// Export the action creators for use in components
+export const { addToCart, setInitialCartItems, changeQty } = cartSlice.actions;
 
-export default cartSlice.reducer
+// Export the reducer for use in the store
+export default cartSlice.reducer;

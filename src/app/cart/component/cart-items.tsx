@@ -1,9 +1,8 @@
 import Photos from '@/components/custom/photos';
 import { CartItem, changeQty } from '@/lib/store/features/cart/cartSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch } from '@/lib/store/hooks';
 import { cartConfig, cartSelectedToppings } from '@/lib/utils';
 import QtyChanger from './qty-changer';
-import { Button } from '@/components/ui/button';
 import { useTotalPrice } from '@/lib/custom-hooks/useTotalPrice';
 
 const CartItems = ({ item }: { item: CartItem }) => {

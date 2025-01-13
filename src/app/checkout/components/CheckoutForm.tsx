@@ -7,7 +7,6 @@ import { Coins, CreditCard } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { getCustomer } from '@/lib/http/api';
 import { Customer } from '@/lib/types';
