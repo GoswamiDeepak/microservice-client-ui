@@ -61,7 +61,12 @@ const CheckoutForm = () => {
         },
         retry: 3,
         onSuccess: (data) => {
-            console.log(data);
+            if(data.paymentUrl) {
+                // window.open(data.paymentUrl, '_blank');
+                window.location.href = data.paymentUrl;
+            }
+            // TODO: PAYMENT MODE IS DONE BY CASH LOGIC
+            // TODO: 1. CLEAR THE CART 2. REDIRECT THE USER TO ORDER STATUS PAGE 
         },
     });
 
