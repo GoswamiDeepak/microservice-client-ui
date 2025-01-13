@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICouponData } from '../types';
+import { ICouponData, Order } from '../types';
 
 export const api = axios.create({
     baseURL: 'http://localhost:8000',
@@ -15,3 +15,9 @@ const ORDER_SERVICE_PREFIX = '/api/order';
 export const getCustomer = async() => await api.get(`${ORDER_SERVICE_PREFIX}/customer`);
 export const addAddress = (customerId:string, address:string) => api.patch(`${ORDER_SERVICE_PREFIX}/customer/address/${customerId}`,{address}); 
 export const verfiyCoupon = (data : ICouponData) => api.post(`${ORDER_SERVICE_PREFIX}/coupon/verify`,data)
+
+export const createOrder = (data:Order, idempotencyKey:string) => api.post(`${ORDER_SERVICE_PREFIX}/order`, data,{
+    headers : {
+        'Idempotency-Key' : idempotencyKey
+    }
+});

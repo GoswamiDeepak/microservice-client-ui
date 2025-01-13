@@ -3,13 +3,14 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Coins, CreditCard } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useQuery } from '@tanstack/react-query';
-import { getCustomer } from '@/lib/http/api';
-import { Customer } from '@/lib/types';
+import { createOrder, getCustomer } from '@/lib/http/api';
+import { Customer, Order } from '@/lib/types';
 import AddAddress from './address-model';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -27,6 +28,8 @@ const formSchema = z.object({
 });
 
 const CheckoutForm = () => {
+    const idempotencyKeyRef = useRef("");
+
     const searchParams = useSearchParams();
 
     // Initialize the form using react-hook-form and Zod resolver
@@ -48,10 +51,21 @@ const CheckoutForm = () => {
         },
     });
 
-    // Display loading state while fetching customer data
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    const {mutate} = useMutation({
+        mutationKey: ['createOrder'],
+        mutationFn: async (data:Order) => {
+            // const idempotencyKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            // const idempotencyKey = uuidv4() + customer?._id;
+            const idempotencyKey = idempotencyKeyRef.current ? idempotencyKeyRef.current : idempotencyKeyRef.current = uuidv4();
+            return await createOrder(data, idempotencyKey).then((res) => res.data);
+        },
+        retry: 3,
+        onSuccess: (data) => {
+            console.log(data);
+        },
+    });
+
+    
 
     // Handler for placing the order
     const handlePlaceOrder = (data: z.infer<typeof formSchema>) => {
@@ -60,17 +74,22 @@ const CheckoutForm = () => {
             alert('Retaurent ID is required!') ; // TODO: change it with toast
             return;
         }
-        const order = {
+        const orderData = {
             cart: cart,
             couponCode: chosenCouponCode.current ? chosenCouponCode.current : '',
             tenantId: tenantId,
-            customerId: customer?._id,
+            customerId: customer? customer._id:'',
             comment: data.comment,
             paymentMode: data.paymentMode,
             address: data.address,
         }
-        console.log(order);
+        mutate(orderData);
     };
+
+    // Display loading state while fetching customer data
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <Form {...customerForm}>

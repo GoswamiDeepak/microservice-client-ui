@@ -1,3 +1,5 @@
+import { CartItem } from "../store/features/cart/cartSlice";
+
 export interface Restaurant {
     id: string
     name: string
@@ -72,4 +74,14 @@ export interface Customer {
 export interface ICouponData {
     code: string;
     tenantId: string;
+}
+
+export interface Order {
+    cart: CartItem[];
+    couponCode: string;
+    tenantId: string;
+    customerId: string;
+    comment: string;
+    paymentMode: string;
+    address: string;
 }
