@@ -6,7 +6,7 @@ const CheckoutPage = async ({ searchParams }: { searchParams: { restaurentId: st
     const session = await getSession();
 
     const sParams = new URLSearchParams(searchParams);
-    const existingQueryString = sParams.toString();
+    const existingQueryString = sParams.toString(); 
 
     sParams.set('return-to', `/checkout?${existingQueryString}`);
 

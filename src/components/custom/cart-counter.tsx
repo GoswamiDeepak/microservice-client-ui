@@ -7,8 +7,8 @@ import React from 'react';
 
 const CartCounter = () => {
     const searchParams = useSearchParams();
-    console.log('seachParams....', searchParams);
     const cartItem = useAppSelector((state) => state.cart.cartItem);
+    
     return (
         <div className="relative">
             <Link href={`/cart?restaurentId=${searchParams.get('restaurentId')}`}>

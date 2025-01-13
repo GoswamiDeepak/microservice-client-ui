@@ -16,17 +16,32 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import OrderSummary from './order-summary';
+import { useRef } from 'react';
+import { useAppSelector } from '@/lib/store/hooks';
+import { useSearchParams } from 'next/navigation';
 
+// Define the form schema using Zod for validation
 const formSchema = z.object({
-    address: z.string({ required_error: 'Please select an address.' }),
-    paymentMode: z.enum(['card', 'cash'], { required_error: 'You need to select a pyament mode type.' }),
-    comment: z.any(),
+    address: z.string({ required_error: 'Please select an address.' }), // Address field is required
+    paymentMode: z.enum(['card', 'cash'], { required_error: 'You need to select a payment mode type.' }), // Payment mode must be either 'card' or 'cash'
+    comment: z.any(), // Comment field is optional and can be any type
 });
 
 const CheckoutForm = () => {
+    const searchParams = useSearchParams();
+
+    // Initialize the form using react-hook-form and Zod resolver
     const customerForm = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
+
+    // Fetch cart items from the Redux store
+    const cart = useAppSelector((state) => state.cart.cartItem);
+
+    // Ref to store the chosen coupon code
+    const chosenCouponCode = useRef("");
+
+    // Fetch customer data using react-query
     const { data: customer, isLoading } = useQuery<Customer>({
         queryKey: ['acustomer'],
         queryFn: async () => {
@@ -34,13 +49,28 @@ const CheckoutForm = () => {
         },
     });
 
+    // Display loading state while fetching customer data
     if (isLoading) {
         return <div>Loading...</div>;
     }
 
+    // Handler for placing the order
     const handlePlaceOrder = (data: z.infer<typeof formSchema>) => {
-        //HANDLE THE PLACE ORDER
-        console.log('place order', data);
+        const tenantId = searchParams.get('restaurentId');
+        if (!tenantId) {
+            alert('Retaurent ID is required!') ; // TODO: change it with toast
+            return;
+        }
+        const order = {
+            cart: cart,
+            couponCode: chosenCouponCode.current ? chosenCouponCode.current : '',
+            tenantId: tenantId,
+            customerId: customer?._id,
+            comment: data.comment,
+            paymentMode: data.paymentMode,
+            address: data.address,
+        }
+        console.log(order);
     };
 
     return (
@@ -48,30 +78,42 @@ const CheckoutForm = () => {
             <form onSubmit={customerForm.handleSubmit(handlePlaceOrder)}>
                 <div className="container max-w-screen-xl mx-auto py-5">
                     <div className="grid grid-cols-12 gap-4">
+                        {/* Left column for customer details */}
                         <div className="col-span-8 bg-white rounded-lg p-6">
                             <h3 className="font-bold text-xl">Customer Details</h3>
+
+                            {/* First Name Field */}
                             <div className="w-full mt-4">
                                 <Label htmlFor="firstname" className="text-[16px] font-semibold">
                                     FirstName
                                 </Label>
                                 <Input className="mt-2" type="firstname" id="firstname" defaultValue={customer?.firstname} disabled />
                             </div>
+
+                            {/* Last Name Field */}
                             <div className="w-full mt-4">
                                 <Label htmlFor="lastname" className="text-[16px] font-semibold">
                                     Lastname
                                 </Label>
                                 <Input className="mt-2" type="lastname" id="lastname" defaultValue={customer?.lastname} disabled />
                             </div>
+
+                            {/* Email Field */}
                             <div className="w-full mt-4">
                                 <Label htmlFor="email" className="text-[16px] font-semibold">
                                     Email
                                 </Label>
                                 <Input type="email" id="email" className="mt-2" defaultValue={customer?.email} disabled />
                             </div>
+
+                            {/* Address Section */}
                             <div className="flex justify-between items-center mt-4 w-full">
                                 <p className="text-[16px] font-semibold">Address</p>
+                                {/* Button to add a new address */}
                                 <AddAddress customerId={customer?._id || ''} />
                             </div>
+
+                            {/* Address Selection Radio Group */}
                             <div className="mt-4">
                                 <FormField
                                     name="address"
@@ -81,10 +123,10 @@ const CheckoutForm = () => {
                                             <FormItem>
                                                 <FormControl>
                                                     <RadioGroup
-                                                        // defaultValue=""
                                                         onValueChange={field.onChange}
-                                                        // value={}
-                                                        className="grid grid-cols-2 gap-6 mt-2">
+                                                        className="grid grid-cols-2 gap-6 mt-2"
+                                                    >
+                                                        {/* Render each address as a radio button option */}
                                                         {customer?.address?.map((data) => (
                                                             <Card className={``} key={data?.text}>
                                                                 <CardContent className="p-4">
@@ -98,14 +140,15 @@ const CheckoutForm = () => {
                                                             </Card>
                                                         ))}
                                                     </RadioGroup>
-                                                    {/* <AddressList address={customer?.address || []} field={field}  /> */}
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage /> {/* Display validation error message */}
                                             </FormItem>
                                         );
                                     }}
                                 />
                             </div>
+
+                            {/* Payment Mode Selection */}
                             <div className="mt-4 ">
                                 <p className="text-[16px] font-semibold ">Choose Payment</p>
                                 <FormField
@@ -118,8 +161,8 @@ const CheckoutForm = () => {
                                                     <RadioGroup
                                                         onValueChange={field.onChange}
                                                         className="flex gap-4 mt-2"
-                                                        // className="grid grid-cols-3 gap-4"
                                                     >
+                                                        {/* Card Payment Option */}
                                                         <div className="w-[100px] h-[50px]">
                                                             <FormControl>
                                                                 <RadioGroupItem
@@ -137,6 +180,7 @@ const CheckoutForm = () => {
                                                             </Label>
                                                         </div>
 
+                                                        {/* Cash Payment Option */}
                                                         <div className="w-[100px] h-[50px]">
                                                             <FormControl>
                                                                 <RadioGroupItem
@@ -155,12 +199,14 @@ const CheckoutForm = () => {
                                                         </div>
                                                     </RadioGroup>
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage /> {/* Display validation error message */}
                                             </FormItem>
                                         );
                                     }}
                                 />
                             </div>
+
+                            {/* Comment Section */}
                             <div className="mt-4 ">
                                 <p className="text-[16px] font-semibold mb-2">Add Comment</p>
                                 <FormField
@@ -178,8 +224,10 @@ const CheckoutForm = () => {
                                 />
                             </div>
                         </div>
+
+                        {/* Right column for Order Summary */}
                         <div className="col-span-4 ">
-                            <OrderSummary />
+                            <OrderSummary handleCouponCode={(data) => (chosenCouponCode.current = data)} />
                         </div>
                     </div>
                 </div>
