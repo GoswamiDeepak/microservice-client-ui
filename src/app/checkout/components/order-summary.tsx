@@ -5,6 +5,7 @@ import { useAppSelector } from '@/lib/store/hooks';
 import { ICouponData } from '@/lib/types';
 import { getTotalPrice } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
+import { LoaderCircle } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
 
@@ -13,7 +14,7 @@ const TAX_PERCENTAGE = 5; // TODO: Move to the backend according to product
 const DELIVERY_CHARGE = 100;
 
 // OrderSummary component that handles order calculations and coupon application
-const OrderSummary = ({ handleCouponCode }: { handleCouponCode: (data: string) => void }) => {
+const OrderSummary = ({ handleCouponCode, isOrderPending }: { handleCouponCode: (data: string) => void; isOrderPending: boolean }) => {
     // Fetch cart items from the Redux store
     const cart = useAppSelector((state) => state.cart.cartItem);
 
@@ -141,7 +142,15 @@ const OrderSummary = ({ handleCouponCode }: { handleCouponCode: (data: string) =
             {isError && <span className="text-red-500  mt-2">Invalid Token!</span>}
             {/* Place order button */}
             <div className="flex justify-end mt-5">
-                <Button>Place Order</Button>
+                <Button disabled={isOrderPending}>
+                    {isOrderPending ? (
+                        <span className="flex items-center gap-2">
+                            <LoaderCircle className="animate-spin" /> Please wait{' '}
+                        </span>
+                    ) : (
+                        <span>Place Order</span>
+                    )}
+                </Button>
             </div>
         </div>
     );

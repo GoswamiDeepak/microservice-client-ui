@@ -51,7 +51,7 @@ const CheckoutForm = () => {
         },
     });
 
-    const {mutate} = useMutation({
+    const {mutate, isPending:isOrderPending} = useMutation({
         mutationKey: ['createOrder'],
         mutationFn: async (data:Order) => {
             // const idempotencyKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -245,7 +245,7 @@ const CheckoutForm = () => {
 
                         {/* Right column for Order Summary */}
                         <div className="col-span-4 ">
-                            <OrderSummary handleCouponCode={(data) => (chosenCouponCode.current = data)} />
+                            <OrderSummary handleCouponCode={(data) => (chosenCouponCode.current = data)} isOrderPending={isOrderPending} />
                         </div>
                     </div>
                 </div>
