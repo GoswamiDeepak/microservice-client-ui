@@ -17,8 +17,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
 import OrderSummary from './order-summary';
 import { useRef } from 'react';
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { useSearchParams } from 'next/navigation';
+import { clearCart } from '@/lib/store/features/cart/cartSlice';
 
 // Define the form schema using Zod for validation
 const formSchema = z.object({
@@ -28,6 +29,7 @@ const formSchema = z.object({
 });
 
 const CheckoutForm = () => {
+    const dispatch = useAppDispatch()
     const idempotencyKeyRef = useRef("");
 
     const searchParams = useSearchParams();
@@ -63,10 +65,11 @@ const CheckoutForm = () => {
         onSuccess: (data) => {
             if(data.paymentUrl) {
                 // window.open(data.paymentUrl, '_blank');
-                window.location.href = data.paymentUrl;
+                return window.location.href = data.paymentUrl;
             }
             // TODO: PAYMENT MODE IS DONE BY CASH LOGIC
             // TODO: 1. CLEAR THE CART 2. REDIRECT THE USER TO ORDER STATUS PAGE 
+            dispatch(clearCart()) //DONE: CLEAR THE CART if done by cash
         },
     });
 
