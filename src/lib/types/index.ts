@@ -85,3 +85,19 @@ export interface Order {
     paymentMode: string;
     address: string;
 }
+
+export interface OrderItem {
+    _id: string;
+    customerId: string;
+    total: number;
+    discount: number;
+    taxes: number;
+    deliveryChages: number;
+    address:string;
+    tenantId: string;
+    comment: string;
+    paymentMode: string;
+    orderStatus: string;
+    paymentStatus: string;
+    createdAt: string;
+}
